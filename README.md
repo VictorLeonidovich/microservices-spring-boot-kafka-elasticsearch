@@ -1,2 +1,4 @@
-# microservices-spring-boot-kafka-elasticsearch
-see https://www.udemy.com/course/event-driven-microservices-spring-boot-kafka-and-elasticsearch/?srsltid=AfmBOopncw92YnQ_ORRP0fTH_JLoaR5ibsO3Wh-bEjJQAS9nkP_0-4-5
+# Running the application
+- Please enter the correct credentials in twitter4j.properties file.
+- Then run TwitterToKafkaServiceApplication inside IntelliJ, or run with mvn spring-boot:run command
+

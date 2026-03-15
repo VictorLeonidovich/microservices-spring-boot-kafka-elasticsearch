@@ -62,6 +62,7 @@
 		</dependencies>
 	</dependencyManagement>
 
+
 	<build>
 		<plugins>
 			<plugin>
@@ -70,6 +71,8 @@
 				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<release>11</release>
+					<fork>true</fork>
+					<executable>${JAVA_HOME_11}/bin/javac</executable>
 				</configuration>
 			</plugin>
 		</plugins>
