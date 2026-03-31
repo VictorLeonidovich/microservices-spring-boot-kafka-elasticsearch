@@ -97,7 +97,7 @@ public class TwitterAvroModel extends org.apache.avro.specific.SpecificRecordBas
     this.createdAt = createdAt;
   }
 
-  public org.apache.avro.specific.SpecificData getSpecificData() { return MODEL$; }
+  public SpecificData getSpecificData() { return MODEL$; }
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
   public Object get(int field$) {
