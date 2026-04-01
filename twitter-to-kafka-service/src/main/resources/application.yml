@@ -1,0 +1,21 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: configserver
+  profiles:
+    active: git # or 'native' if you don't want to use git init/commit
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  cloud:
+    config:
+      server:
+        git:
+          # ${user.dir} points to the root of your project
+          uri: file://${user.dir}/config-server-repository/
+          clone-on-start: true
+          # Search for files in subfolders if necessary
+          search-paths: '*'
+      # Optional: Helps with debugging connection issues
+      fail-fast: true 
