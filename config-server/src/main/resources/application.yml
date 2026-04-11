@@ -5,3 +5,21 @@ logging:
   level:
     ROOT: INFO
     org.spring.framework.cloud.config: DEBUG
+
+spring:
+  application:
+    name: configserver
+  cloud:
+    config:
+      server:
+        git:
+          # Point to the ROOT of the repository
+          uri: https://github.com/VictorLeonidovich/microservices-spring-boot-kafka-elasticsearch.git
+          # Specify the subfolder where your properties are actually kept
+          search-paths: config-server-repository
+          default-label: main
+          username: VictorLeonidovich
+          password: ${GITHUB_TOKEN} # Use an environment variable for security
+          clone-on-start: true
+    # fail-fast: true is a Config CLIENT property.
+    # For a SERVER, you usually don't need it here.

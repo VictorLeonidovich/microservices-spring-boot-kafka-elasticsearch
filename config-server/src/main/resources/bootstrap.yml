@@ -1,10 +1,14 @@
-spring:
-  application:
-    name: configserver
-  cloud:
-    config:
-      server:
-        git:
-          uri: file://${user.dir}/config-server-repository/
-          clone-on-start: true
-    fail-fast: true
+# legacy
+#spring:
+#  application:
+#    name: configserver
+#  cloud:
+#    config:
+#      server:
+#        git:
+#          uri: https://github.com/VictorLeonidovich/microservices-spring-boot-kafka-elasticsearch/config-server-repository
+#          default-label: main
+#          username: VictorLeonidovich
+#          password:
+#          clone-on-start: true
+#    fail-fast: true

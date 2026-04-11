@@ -1,21 +1,26 @@
 server:
-  port: 8888
+  port: 8080
 
 spring:
   application:
-    name: configserver
+    name: twitter-to-kafka-service
   profiles:
-    active: git # or 'native' if you don't want to use git init/commit
+    active: twitter_to_kafka
   config:
+    # This is the "Modern" way to link to the Config Server
+    # Use 'optional:' so the app starts even if the server is down
     import: "optional:configserver:http://localhost:8888"
   cloud:
     config:
+      name: twitter-to-kafka-service,config-client
       server:
         git:
-          # ${user.dir} points to the root of your project
-          uri: file://${user.dir}/config-server-repository/
+          uri: https://github.com/VictorLeonidovich/microservices-spring-boot-kafka-elasticsearch.git
+          default-label: main
+          username: VictorLeonidovich
+          password: ${GITHUB_TOKEN}
           clone-on-start: true
-          # Search for files in subfolders if necessary
-          search-paths: '*'
-      # Optional: Helps with debugging connection issues
-      fail-fast: true 
+          # Optional: ensures the server fails to start if the Git repo is unreachable
+          fail-on-delivery-error: true
+  # This replaces 'fail-fast' for the server's own startup check
+  cloud.config.fail-fast: true
