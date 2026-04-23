@@ -9,6 +9,10 @@ logging:
 spring:
   application:
     name: configserver
+  security:
+    user:
+      name: spring_cloud_user
+      password: ${CONFIG_SERVER_PASSWORD}
   cloud:
     config:
       server:

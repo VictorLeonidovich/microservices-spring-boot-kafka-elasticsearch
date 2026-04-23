@@ -6,13 +6,55 @@ services:
       - "5005:5005"
     volumes:
       - "./docker-logs:/workspace/twitter-to-kafka-service/logs"
+      - "./check-config-server-started.sh:/usr/local/bin/check-config-server-started.sh"
+    user: root
+    entrypoint: ["check-config-server-started.sh"]
+    depends_on:
+      - schema-registry
+      - config-server
     environment:
       - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms128m -Xmx256m"
       - "LOGGING_LEVEL_COM_MICROSERVICES_DEMO=info"
       - "LOGGING_LEVEL_ROOT=info"
-      - "KAFKA-CONFIG_TOPIC-NAME=twitter-topic"
-      - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092, kafka-broker-2:9092, kafka-broker-3:9092"
+#      # NEW: Provide credentials so you don't get 401 Unauthorized
+      - "SPRING_CLOUD_CONFIG_USERNAME=spring_cloud_user"
+      - "SPRING_CLOUD_CONFIG_PASSWORD=${CONFIG_SERVER_PASSWORD}"
+       # NEW: Tell it which profile to use
+      - "SPRING_PROFILES_ACTIVE=twitter_to_kafka"
+
+#       Spring Boot 2.7 standard Kafka properties
+      - "SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092"
+      - "SPRING_KAFKA_ADMIN_PROPERTIES_BOOTSTRAP_SERVERS=kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092"
+      - "SPRING_KAFKA_PROPERTIES_SECURITY_PROTOCOL=PLAINTEXT"
+      - "SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL=http://schema-registry:8081"
+
+      #  Spring Cloud Config (using the modern 'Config Import' way)
+      - "SPRING_CONFIG_IMPORT=configserver:http://config-server:8888"
+      # Ensure it looks for the correct file names in Git
+      - "SPRING_CLOUD_CONFIG_NAME=config-client"
+
+      #  Custom Application Properties (Spring maps underscores to dots automatically)
+      - "KAFKA_CONFIG_TOPIC_NAME=twitter-topic"
+      - "TWITTER_TO_KAFKA_SERVICE_ENABLE_MOCK_TWEETS=true"
+
+      # Use these exact names to override your 'kafka-config' and 'kafka-producer-config' objects
+      - "KAFKA-CONFIG_BOOTSTRAP-SERVERS=kafka-broker-1:9092,kafka-broker-2:9092,kafka-broker-3:9092"
       - "KAFKA-CONFIG_SCHEMA-REGISTRY-URL=http://schema-registry:8081"
-      - "TWITTER-TO-KAFKA-SERVICE_ENABLE-MOCK-TWEETS=true"
+      - "KAFKA-PRODUCER-CONFIG_RETRY-COUNT=5"
+      - "KAFKA-PRODUCER-CONFIG_KEY-SERIALIZER-CLASS=org.apache.kafka.common.serialization.LongSerializer"
+      - "KAFKA-PRODUCER-CONFIG_VALUE-SERIALIZER-CLASS=io.confluent.kafka.serializers.KafkaAvroSerializer"
+
+    networks:
+      - ${GLOBAL_NETWORK:-services}
+  config-server:
+    image: ${GROUP_ID}/config.server:${SERVICE_VERSION:-latest}
+    ports:
+      - "5006:5006"
+    volumes:
+      - "./docker-logs:/workspace/config-server/logs"
+    environment:
+      - "JAVA_OPTS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Xms128m -Xmx256m"
+      - "SPRING_SECURITY_USER_PASSWORD=${CONFIG_SERVER_PASSWORD}"
+      - "GITHUB_TOKEN=${GITHUB_TOKEN}"
     networks:
       - ${GLOBAL_NETWORK:-services}

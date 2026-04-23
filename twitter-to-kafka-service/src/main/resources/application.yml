@@ -1,6 +1,10 @@
 server:
   port: 8080
 
+logging:
+  level:
+    ROOT: INFO
+
 spring:
   application:
     name: twitter-to-kafka-service
@@ -12,15 +16,7 @@ spring:
     import: "optional:configserver:http://localhost:8888"
   cloud:
     config:
-      name: twitter-to-kafka-service,config-client
-      server:
-        git:
-          uri: https://github.com/VictorLeonidovich/microservices-spring-boot-kafka-elasticsearch.git
-          default-label: main
-          username: VictorLeonidovich
-          password: ${GITHUB_TOKEN}
-          clone-on-start: true
-          # Optional: ensures the server fails to start if the Git repo is unreachable
-          fail-on-delivery-error: true
-  # This replaces 'fail-fast' for the server's own startup check
-  cloud.config.fail-fast: true
+      # 'name' is still used to tell the server which files to look for
+      name: config-client,config-client-twitter_to_kafka
+      username: spring_cloud_user
+      password: ${CONFIG_SERVER_PASSWORD}

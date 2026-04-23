@@ -40,6 +40,7 @@ public class KafkaProducerConfig<K extends Serializable, V extends SpecificRecor
         props.put(ProducerConfig.ACKS_CONFIG, kafkaProducerConfigData.getAcks());
         props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, kafkaProducerConfigData.getRequestTimeoutMs());
         props.put(ProducerConfig.RETRIES_CONFIG, kafkaProducerConfigData.getRetryCount());
+        props.put("specific.avro.reader", "true");
         return props;
     }
 
