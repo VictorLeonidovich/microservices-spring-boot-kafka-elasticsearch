@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: kafka-to-elastic-service
+  profiles:
+    active: kafka_to_elastic
+
+  # This replaces the bootstrap logic
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  cloud:
+    config:
+      name: kafka-to-elastic-service,config-client
+      username: spring_cloud_user
+      password: ${CONFIG_SERVER_PASSWORD}
